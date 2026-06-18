@@ -1,0 +1,32 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code Repository
+      uses: actions/checkout@v4
+
+    - name: Initialize Java Development Environment
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setup Gradle Environment
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Compile Code Package into APK
+      run: gradle assembleDebug
+
+    - name: Save and Release APK File
+      uses: actions/upload-artifact@v4
+      with:
+        name: Native-App-Installer
+        path: "**/build/outputs/apk/debug/*.apk"
